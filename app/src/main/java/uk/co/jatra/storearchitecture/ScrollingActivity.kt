@@ -17,6 +17,7 @@ class ScrollingActivity : AppCompatActivity() {
     private val viewModel: UserViewModel by viewModels(
         //see https://stackoverflow.com/a/56908621/2512177
         //https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate
+        //SavedStateViewModelFactory not actually used in the ViewModel at present
         factoryProducer = { SavedStateViewModelFactory(application, this) }
     )
 

@@ -1,25 +1,26 @@
 package uk.co.jatra.storearchitecture.ui
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import uk.co.jatra.storearchitecture.data.User
+import androidx.lifecycle.*
 import uk.co.jatra.storearchitecture.repository.UsersRepository
 import kotlin.random.Random
 
-class UserViewModel: ViewModel() {
-    var male : Boolean = true
-    val names: MutableLiveData<List<String>> = MutableLiveData()
+//TODO inject (or use a service locator) to get repository
 
-    private fun updateNames(userList: List<User>) {
-        names.value = userList.map { it.name }
+class UserViewModel: ViewModel() {
+    private var male: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val names: LiveData<List<String>> = male.switchMap { male ->
+        liveData {
+            emit(UsersRepository.getUsers(male).map { it.name })
+        }
     }
 
     fun refresh() {
-        male = Random.nextBoolean()
-        //Use injection (or a service locator) for less coupling.
-        UsersRepository.getUsers(male)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(::updateNames)
+        male.value = Random.nextBoolean()
     }
 }
+
+/*
+NB docs show
+    liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+*/
