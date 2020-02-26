@@ -31,7 +31,7 @@ class ScrollingActivity : AppCompatActivity() {
             viewModel.refresh()
         }
 
-        viewModel.names.observe(this, Observer {
+        viewModel.data.observe(this, Observer {
             val sb: StringBuilder = StringBuilder()
             for (name in it) {
                 Log.d(TAG, "new name: $name")

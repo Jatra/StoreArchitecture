@@ -7,16 +7,17 @@ import kotlin.random.Random
 //TODO inject (or use a service locator) to get repository
 
 class UserViewModel: ViewModel() {
-    private var male: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val names: LiveData<List<String>> = male.switchMap { male ->
+    private var trigger: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val data: LiveData<List<String>> = trigger.switchMap { triggerValue ->
         liveData {
-            emit(UsersRepository.getUsers(male).map { it.name })
+            emit(UsersRepository.getUsers(triggerValue).map { it.name })
         }
     }
 
     fun refresh() {
-        male.value = Random.nextBoolean()
+        trigger.value = Random.nextBoolean()
     }
 }
 
